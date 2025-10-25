@@ -1,28 +1,42 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import CTA from './components/CTA';
+import ServicesPopup from './components/ServicesPopup';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [openServices, setOpenServices] = useState(false);
+
+  const openServicesPopup = useCallback(() => setOpenServices(true), []);
+  const closeServicesPopup = useCallback(() => setOpenServices(false), []);
+
+  const scrollToContact = useCallback(() => {
+    const el = document.getElementById('contact');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div className="bg-slate-950 text-white antialiased selection:bg-cyan-300/30 selection:text-white">
+      <Hero onOpenServices={openServicesPopup} onPrimaryCta={scrollToContact} />
+      <Features />
+      <CTA id="contact" />
 
-export default App
+      <footer className="py-12 border-t border-white/10 bg-gradient-to-b from-transparent to-slate-950/40">
+        <div className="container mx-auto px-6 max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-cyan-400/20 border border-cyan-300/30 grid place-items-center backdrop-blur-md">
+              <span className="text-cyan-300 font-bold">D</span>
+            </div>
+            <div>
+              <p className="font-semibold tracking-tight">Digitalphy Media</p>
+              <p className="text-xs text-white/60">Performance-first digital marketing</p>
+            </div>
+          </div>
+          <div className="text-sm text-white/60">© {new Date().getFullYear()} Digitalphy Media. All rights reserved.</div>
+        </div>
+      </footer>
+
+      <ServicesPopup open={openServices} onClose={closeServicesPopup} onBookCall={scrollToContact} />
+    </div>
+  );
+}
